@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Reservation {
+  id           String  @id @default(uuid())
+  content      String
+  restaurantID String?
+  datetime     String
+  isAvailable  Boolean @default(true)
+  nft          String? @unique
+  author       User?   @relation(fields: [restaurantID], references: [pubKey])
+}
+
+model User {
+  name         String
+  email        String?       @unique
+  pubKey       String        @id @unique
+  description  String?
+  isRestaurant Boolean
+  location     String?
+  menu         String?
+  phone        String?       @unique
+  isSetup      Boolean       @default(false)
+  reservations Reservation[]
+
+  @@map("users")
+}
